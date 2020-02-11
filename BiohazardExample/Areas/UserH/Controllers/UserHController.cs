@@ -8,7 +8,7 @@ namespace BiohazardExample.Areas.UserH.Controllers
 {
     public class UserHController : Controller
     {
-        public IActionResult Index()
+        public IActionResult UserH()
         {
             return View();
         }
