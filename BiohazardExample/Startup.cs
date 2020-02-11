@@ -65,6 +65,7 @@ namespace BiohazardExample
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+            // Esto es un comentario.
         }
     }
 }
