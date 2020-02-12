@@ -63,6 +63,7 @@ namespace BiohazardExample
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapAreaControllerRoute("User", "UserH", "{controller=UserH}/{action=UserH}/{id?}");
                 endpoints.MapRazorPages();
             });
             // Esto es un comentario.

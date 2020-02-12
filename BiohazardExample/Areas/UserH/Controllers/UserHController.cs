@@ -8,6 +8,7 @@ namespace BiohazardExample.Areas.UserH.Controllers
 {
     public class UserHController : Controller
     {
+        [Area("UserH")]
         public IActionResult UserH()
         {
             return View();
