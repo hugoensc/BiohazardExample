@@ -28,6 +28,54 @@ namespace BiohazardExample.Areas.UserH.Pages.Account
             Message = data;
         }
 
+        public async Task<IActionResult> OnPostAsync()
+        {
+            var data = Input;
+            if (ModelState.IsValid)
+            {
+                var userList = _userManager.Users.Where(u => u.Email.Equals(Input.Email)).ToList();
+
+                if (userList.Count.Equals(0))
+                {
+                    var user = new IdentityUser
+                    {
+                        UserName = Input.Email,
+                        Email = Input.Email,
+                    };
+                    var result = await _userManager.CreateAsync(user, Input.Password);
+                    if (result.Succeeded)
+                    {
+                        return Page();
+                    }
+                    else
+                    {
+                        foreach (var items in result.Errors)
+                        {
+                            Input = new InputModel
+                            {
+                                ErrorMessage = items.Description,
+                            };
+                        }
+                        return Page();
+                    }
+                }
+                else
+                {
+                    Input = new InputModel
+                    {
+                        ErrorMessage = $"El {Input.Email} is already registered.",
+                    };
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("Input.Email", "Must type an Email");
+            }
+            //var data = Input;
+            return Page();
+        }
+        
+
         public class InputModel
         {
             [Required]
@@ -47,7 +95,7 @@ namespace BiohazardExample.Areas.UserH.Pages.Account
             [Display(Name = "Confirm Password ...")]
             public String ConfirmPassword { get; set; }
 
-            [Required]
+            //[Required]
             public String ErrorMessage { get; set; }
         }
     }
