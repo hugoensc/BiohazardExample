@@ -17,8 +17,9 @@
 
 
   <ItemGroup>
+    <Folder Include="Areas\HomePage\Data\" />
+    <Folder Include="Areas\HomePage\Models\" />
     <Folder Include="Areas\UserH\Data\" />
-    <Folder Include="Areas\UserH\Models\" />
   </ItemGroup>
 
 </Project>

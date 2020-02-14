@@ -30,8 +30,9 @@ namespace BiohazardExample
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+            //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            //    .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
@@ -64,6 +65,7 @@ namespace BiohazardExample
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapAreaControllerRoute("User", "UserH", "{controller=UserH}/{action=UserH}/{id?}");
+                endpoints.MapAreaControllerRoute("HomePage", "HomePage", "{controller=HomePage}/{action=HomePage}/{id?}");
                 endpoints.MapRazorPages();
             });
             // Esto es un comentario.

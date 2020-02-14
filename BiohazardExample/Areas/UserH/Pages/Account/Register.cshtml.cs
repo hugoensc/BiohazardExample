@@ -17,19 +17,41 @@ namespace BiohazardExample.Areas.UserH.Pages.Account
         public String Message { get; set; }
 
         private UserManager<IdentityUser> _userManager;
+        private SignInManager<IdentityUser> _signInManager;
 
-        public RegisterModel(UserManager<IdentityUser> userManager)
+        private static InputModel _input = null;
+
+        public RegisterModel(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
-        public void OnGet(String data)
+        //public void OnGet(String data)
+        public void OnGet()
         {
-            Message = data;
+            if (_input != null)
+            {
+                Input = _input;
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            if (await RegisterUserAsync())
+            {
+                return Redirect("/HomePage/HomePage?area=HomePage");
+            }
+            else
+            {
+                return Redirect("/Biohazard/Register");
+            }
+            //return Page();
+        }
+
+        private async Task<bool> RegisterUserAsync()
+        {
+            var run = false;
             var data = Input;
             if (ModelState.IsValid)
             {
@@ -45,18 +67,22 @@ namespace BiohazardExample.Areas.UserH.Pages.Account
                     var result = await _userManager.CreateAsync(user, Input.Password);
                     if (result.Succeeded)
                     {
-                        return Page();
+                        await _userManager.AddToRoleAsync(user, "User");
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        run =true;
                     }
                     else
                     {
-                        foreach (var items in result.Errors)
+                        foreach (var item in result.Errors)
                         {
                             Input = new InputModel
                             {
-                                ErrorMessage = items.Description,
+                                ErrorMessage = item.Description,
+                                Email = Input.Email,
                             };
                         }
-                        return Page();
+                        _input = Input;
+                        run = false;
                     }
                 }
                 else
@@ -64,7 +90,10 @@ namespace BiohazardExample.Areas.UserH.Pages.Account
                     Input = new InputModel
                     {
                         ErrorMessage = $"El {Input.Email} is already registered.",
+                        Email = Input.Email,
                     };
+                    _input = Input;
+                    run = false;
                 }
             }
             else
@@ -72,9 +101,10 @@ namespace BiohazardExample.Areas.UserH.Pages.Account
                 ModelState.AddModelError("Input.Email", "Must type an Email");
             }
             //var data = Input;
-            return Page();
+            return run;
         }
-        
+
+
 
         public class InputModel
         {
